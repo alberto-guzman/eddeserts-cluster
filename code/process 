@@ -1,0 +1,19 @@
+
+*download texas geofabrik file 
+
+wget http://download.geofabrik.de/europe/germany/berlin-latest.osm.pbf
+
+*gonna try something smaller nor cal 
+wget https://download.geofabrik.de/north-america/us/california/norcal-latest.osm.pbf
+
+*pre process the file on docker
+docker run -t -v "${PWD}:/data" osrm/osrm-backend osrm-extract -p /opt/car.lua /data/norcal-latest.osm.pbf
+
+
+
+docker run -t -v "${PWD}:/data" osrm/osrm-backend osrm-partition /data/norcal-latest.osrm
+
+
+
+docker run -t -i -p 5000:5000 -v "${PWD}:/data" osrm/osrm-backend osrm-routed --algorithm mld /data/norcal-latest.osrm
+docker run -t -v "${PWD}:/data" osrm/osrm-backend osrm-customize /data/norcal-latest.osrm
